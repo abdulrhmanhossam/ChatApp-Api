@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController : BaseApiController
 {
     private readonly AppDbContext _dbContext;
     public UsersController(AppDbContext dbContext)
