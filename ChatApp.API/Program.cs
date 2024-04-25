@@ -1,4 +1,6 @@
 using ChatApp.API.Data;
+using ChatApp.API.Interfaces;
+using ChatApp.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>();
 
 builder.Services.AddCors();
+
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
