@@ -36,6 +36,34 @@ namespace ChatApp.API.Controllers
             return user;
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<AppUser>> Login(LoginDto loginDto)
+        {
+            // get user from database
+            var user = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
+            
+            // check if user null
+            if (user == null)
+                return Unauthorized("Invalid Username");
+            
+            // create hmac and take the key as passwordsalt 
+            using var hmac = new HMACSHA512(user.PasswordSalt);
+
+            // make password array of byte and keep it at computedHash
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+
+            // loop on this array of byte and compare old password hash with new 
+            for (var i = 0; i < computedHash.Length; i++)
+            {
+                if (computedHash[i] != user.PasswordHash[i])
+                    return Unauthorized("Invalid Password");
+            }
+
+            return Ok(user);
+
+        }
+
         // to check if this user name is taken or not
         private async Task<bool> UserExists(string userName)
         {
