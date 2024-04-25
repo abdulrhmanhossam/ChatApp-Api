@@ -1,5 +1,6 @@
 ﻿using ChatApp.API.Data;
 using ChatApp.API.DTOs;
+using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -10,13 +11,16 @@ namespace ChatApp.API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly AppDbContext _dbContext;
-        public AccountController(AppDbContext dbContext)
+        private readonly ITokenService _tokenService;
+
+        public AccountController(AppDbContext dbContext, ITokenService tokenService)
         {
             _dbContext = dbContext;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto) 
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto) 
         {
             if (await UserExists(registerDto.Username))
                 return BadRequest("Username is taken");
@@ -33,11 +37,16 @@ namespace ChatApp.API.Controllers
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            return user;
+            // return username and token
+            return new UserDto
+            {
+                Username = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             // get user from database
             var user = await _dbContext.Users
@@ -60,7 +69,11 @@ namespace ChatApp.API.Controllers
                     return Unauthorized("Invalid Password");
             }
 
-            return Ok(user);
+            return new UserDto
+            {
+                Username = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
 
         }
 
