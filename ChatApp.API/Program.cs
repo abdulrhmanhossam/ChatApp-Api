@@ -1,4 +1,5 @@
 using ChatApp.API.Data;
+using ChatApp.API.Extensions;
 using ChatApp.API.Interfaces;
 using ChatApp.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,25 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>();
 
-builder.Services.AddCors();
+builder.Services.AddApplicationServices(builder.Configuration);
 
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-// add auth service with configuration 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration["TokenKey"])),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-        };
-    });
+builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
