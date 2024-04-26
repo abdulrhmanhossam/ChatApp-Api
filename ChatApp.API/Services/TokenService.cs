@@ -25,7 +25,7 @@ namespace ChatApp.API.Services
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
             };
 
-            // create credential and this will be the token header this take key and algorithm
+            // create credential and this will be signature of token 
             var credential = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
             // add componant to tokenDescriptor to generate token
