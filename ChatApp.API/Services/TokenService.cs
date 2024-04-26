@@ -39,7 +39,7 @@ namespace ChatApp.API.Services
             // use token handler to handle token create and write
             var tokenHandler = new JwtSecurityTokenHandler();
 
-                var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
         }
