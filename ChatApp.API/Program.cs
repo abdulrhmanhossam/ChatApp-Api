@@ -1,4 +1,5 @@
 using ChatApp.API.Extensions;
+using ChatApp.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddIdentityServices(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ExecptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
