@@ -1,4 +1,6 @@
-﻿namespace ChatApp.API.Interfaces
+﻿using ChatApp.API.Entities;
+
+namespace ChatApp.API.Interfaces
 {
     public interface ITokenService
     {

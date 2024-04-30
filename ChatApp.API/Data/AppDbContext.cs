@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ChatApp.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.API.Data;
 

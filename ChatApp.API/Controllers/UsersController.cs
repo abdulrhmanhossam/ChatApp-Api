@@ -1,4 +1,5 @@
 ﻿using ChatApp.API.Data;
+using ChatApp.API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

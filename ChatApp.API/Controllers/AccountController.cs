@@ -1,5 +1,6 @@
 ﻿using ChatApp.API.Data;
 using ChatApp.API.DTOs;
+using ChatApp.API.Entities;
 using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
