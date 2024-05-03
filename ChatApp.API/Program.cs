@@ -1,5 +1,7 @@
+using ChatApp.API.Data;
 using ChatApp.API.Extensions;
 using ChatApp.API.Middlewares;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,5 +41,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var dbContext = services.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+    await Seed.SeedUsersAsync(dbContext);
+}
+catch (Exception ex)
+{
+    var logger = services.GetService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred during migration");
+}
 
 app.Run();
