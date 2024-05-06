@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using ChatApp.API.DTOs;
 using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -35,5 +36,23 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<MemberDto>> GetUser(int id)
     {
         return await _userRepository.GetMemberByIdAsync(id);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+    {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUserByUsernameAsync(username);
+
+        if (user == null)
+            return NotFound();
+
+        
+        _mapper.Map(memberUpdateDto, user);
+
+        if(await _userRepository.SaveAllAsync())
+            return NoContent();
+
+        return BadRequest("Faild to update user");
     }
 }
