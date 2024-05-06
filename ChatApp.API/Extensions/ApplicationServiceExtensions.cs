@@ -1,5 +1,6 @@
 ﻿using ChatApp.API.Data;
 using ChatApp.API.Data.Repositories;
+using ChatApp.API.Helpers;
 using ChatApp.API.Interfaces;
 using ChatApp.API.Services;
 
@@ -17,6 +18,7 @@ namespace ChatApp.API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.Configure<ColudinarySettings>(configuration.GetSection("ColudinarySettings"));
             
             return services;
         }
