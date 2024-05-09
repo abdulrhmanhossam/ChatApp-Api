@@ -19,6 +19,7 @@ namespace ChatApp.API.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<ColudinarySettings>(configuration.GetSection("ColudinarySettings"));
+            services.AddScoped<IPhotoService, PhotoService>();
             
             return services;
         }
