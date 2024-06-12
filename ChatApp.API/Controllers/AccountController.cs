@@ -51,6 +51,7 @@ namespace ChatApp.API.Controllers
         {
             // get user from database
             var user = await _dbContext.Users
+                .Include(p => p.Photos)
                 .FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
             
             // check if user null
@@ -73,7 +74,8 @@ namespace ChatApp.API.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             };
 
         }
