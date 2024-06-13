@@ -1,4 +1,5 @@
-﻿using ChatApp.API.Data;
+﻿using AutoMapper;
+using ChatApp.API.Data;
 using ChatApp.API.DTOs;
 using ChatApp.API.Entities;
 using ChatApp.API.Interfaces;
@@ -13,11 +14,13 @@ namespace ChatApp.API.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
-        public AccountController(AppDbContext dbContext, ITokenService tokenService)
+        public AccountController(AppDbContext dbContext, ITokenService tokenService, IMapper mapper)
         {
             _dbContext = dbContext;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -26,14 +29,13 @@ namespace ChatApp.API.Controllers
             if (await UserExists(registerDto.Username))
                 return BadRequest("Username is taken");
 
+            var user = _mapper.Map<AppUser>(registerDto);
+
             using var hmac = new HMACSHA512();
 
-            var user = new AppUser()
-            {
-                UserName = registerDto.Username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), // make password as hash byte
-                PasswordSalt = hmac.Key // add random key
-            };
+            user.UserName = registerDto.Username.ToLower();
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)); // make password as hash byte
+            user.PasswordSalt = hmac.Key; // add random key
             
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
@@ -42,7 +44,8 @@ namespace ChatApp.API.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                KnownAs = user.KnownAs,
             };
         }
 
@@ -76,6 +79,7 @@ namespace ChatApp.API.Controllers
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                KnownAs = user.KnownAs,
             };
 
         }
