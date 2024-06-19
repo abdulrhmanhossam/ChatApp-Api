@@ -2,6 +2,7 @@
 using ChatApp.API.DTOs;
 using ChatApp.API.Entities;
 using ChatApp.API.Extensions;
+using ChatApp.API.Helpers;
 using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,13 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
     {
-        var users = await _userRepository.GetMembersAsync();
+        var users = await _userRepository.GetMembersAsync(userParams);
+
+        Response.AddPaginationHeader(
+            new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
+
         return Ok(users);
     }
 
