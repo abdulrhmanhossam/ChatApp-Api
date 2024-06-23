@@ -61,7 +61,7 @@ namespace ChatApp.API.Controllers
             if (user == null)
                 return Unauthorized("Invalid Username");
             
-            // create hmac and take the key as passwordsalt 
+            // create hmac and take the key as password salt 
             using var hmac = new HMACSHA512(user.PasswordSalt);
 
             // make password array of byte and keep it at computedHash
@@ -84,7 +84,7 @@ namespace ChatApp.API.Controllers
 
         }
 
-        // to check if this user name is taken or not
+        // to check if this username is taken or not
         private async Task<bool> UserExists(string userName)
         {
             return await _dbContext.Users.

@@ -5,7 +5,7 @@ using ChatApp.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.API.Data;
-public class Seed
+public abstract class Seed
 {
     public static async Task SeedUsersAsync(AppDbContext dbContext)
     {
@@ -29,6 +29,6 @@ public class Seed
             dbContext.Users.Add(user);
         }
 
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 }

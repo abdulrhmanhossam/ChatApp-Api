@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(
-    builder => builder
+    policyBuilder => policyBuilder
     .AllowAnyHeader()
     .AllowAnyMethod()
     .WithOrigins()
