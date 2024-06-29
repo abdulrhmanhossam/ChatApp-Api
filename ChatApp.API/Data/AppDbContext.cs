@@ -18,7 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .GetSection("connectionString")
             .GetSection("DefaultConnection").Value;
 
-        optionsBuilder.UseSqlServer(connecation);
+        optionsBuilder.UseMySql(connecation, ServerVersion.AutoDetect(connecation));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
