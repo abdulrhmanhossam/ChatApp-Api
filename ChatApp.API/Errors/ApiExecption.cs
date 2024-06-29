@@ -12,5 +12,4 @@ public class ApiExecption
         Message = message;
         Details = details;
     }
-    //
 }
