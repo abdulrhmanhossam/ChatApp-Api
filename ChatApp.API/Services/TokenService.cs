@@ -23,7 +23,8 @@ namespace ChatApp.API.Services
             // create claims by adding claim type & value
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new (ClaimTypes.Name, user.UserName)
             };
 
             // create credential and this will be signature of token 

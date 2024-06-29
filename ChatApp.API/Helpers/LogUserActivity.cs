@@ -12,14 +12,14 @@ public class LogUserActivity : IAsyncActionFilter
         if (context.HttpContext.User.Identity?.IsAuthenticated != true) 
             return;
 
-        var username = resultContext.HttpContext.User
-            .GetUserName();
+        var userId = resultContext.HttpContext.User
+            .GetUserId();
 
         var repo = resultContext.HttpContext.RequestServices
             .GetRequiredService<IUserRepository>();
 
         var user = await repo
-            .GetUserByUsernameAsync(username);
+            .GetUserByIdAsync(userId);
 
         if (user == null) 
             return;
