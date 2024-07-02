@@ -1,6 +1,7 @@
 using ChatApp.API.DTOs;
 using ChatApp.API.Entities;
 using ChatApp.API.Extensions;
+using ChatApp.API.Helpers;
 using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,8 +46,15 @@ public class LikesController(ILikesRepository likesRepository) : BaseApiControll
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes(string predicate)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery]LikesParams likesParams)
     {
-        return Ok(await likesRepository.GetUserLikes(predicate, User.GetUserId()));
+        likesParams.UserId = User.GetUserId();
+
+        var users = await likesRepository.GetUserLikes(likesParams);
+
+        Response.AddPaginationHeader(
+            new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
+
+        return Ok(users);
     }
 }
