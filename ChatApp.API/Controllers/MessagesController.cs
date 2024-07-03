@@ -1,7 +1,9 @@
+using System.Reflection.Metadata;
 using AutoMapper;
 using ChatApp.API.DTOs;
 using ChatApp.API.Entities;
 using ChatApp.API.Extensions;
+using ChatApp.API.Helpers;
 using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,5 +41,20 @@ public class MessagesController(IMessageRepository messageRepository, IUserRepos
             return Ok(mapper.Map<MessageDto>(message));
 
         return BadRequest("Failed to save message");
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesForUser(
+        [FromQuery]MessageParams messageParams)
+    {
+        messageParams.Username = User.GetUserName();
+
+        var messages = await messageRepository.GetMessagesForUser(messageParams);
+
+        Response.AddPaginationHeader(
+            new PaginationHeader(messages.CurrentPage, messages.PageSize,
+            messages.TotalCount, messages.TotalPages));
+
+        return messages;
     }
 }
