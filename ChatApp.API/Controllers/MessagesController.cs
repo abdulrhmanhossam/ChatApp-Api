@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using AutoMapper;
 using ChatApp.API.DTOs;
 using ChatApp.API.Entities;
@@ -56,5 +55,13 @@ public class MessagesController(IMessageRepository messageRepository, IUserRepos
             messages.TotalCount, messages.TotalPages));
 
         return messages;
+    }
+
+    [HttpGet("thread/{username}")]
+    public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread(string username)
+    {
+        var currentUsername = User.GetUserName();
+
+        return Ok(await messageRepository.GetMessageThread(currentUsername, username));
     }
 }
