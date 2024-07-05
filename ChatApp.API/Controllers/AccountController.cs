@@ -34,8 +34,6 @@ namespace ChatApp.API.Controllers
             using var hmac = new HMACSHA512();
 
             user.UserName = registerDto.Username.ToLower();
-            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)); // make password as hash byte
-            user.PasswordSalt = hmac.Key; // add random key
             
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
@@ -61,19 +59,6 @@ namespace ChatApp.API.Controllers
             // check if user null
             if (user == null)
                 return Unauthorized("Invalid Username");
-            
-            // create hmac and take the key as password salt 
-            using var hmac = new HMACSHA512(user.PasswordSalt);
-
-            // make password array of byte and keep it at computedHash
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
-            // loop on this array of byte and compare old password hash with new 
-            for (var i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.PasswordHash[i])
-                    return Unauthorized("Invalid Password");
-            }
 
             return new UserDto
             {
