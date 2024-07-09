@@ -20,27 +20,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .GetSection("connectionString")
             .GetSection("DefaultConnection").Value;
 
-        optionsBuilder.UseMySql(connecation, ServerVersion.AutoDetect(connecation));
+        optionsBuilder.UseSqlServer(connecation);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<UserLike>()
-            .HasKey(k => new {k.SourceUserId, k.TargetUserId});
+        //modelBuilder.Entity<UserLike>()
+        //    .HasKey(k => new {k.SourceUserId, k.TargetUserId});
 
-        modelBuilder.Entity<UserLike>()
-            .HasOne(s => s.SourceUser)
-            .WithMany(l => l.LikedUsers)
-            .HasForeignKey(f => f.SourceUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //modelBuilder.Entity<UserLike>()
+        //    .HasOne(s => s.SourceUser)
+        //    .WithMany(l => l.LikedUsers)
+        //    .HasForeignKey(f => f.SourceUserId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<UserLike>()
-            .HasOne(t => t.TargetUser)
-            .WithMany(l => l.LikedByUsers)
-            .HasForeignKey(f => f.TargetUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //modelBuilder.Entity<UserLike>()
+        //    .HasOne(t => t.TargetUser)
+        //    .WithMany(l => l.LikedByUsers)
+        //    .HasForeignKey(f => f.TargetUserId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
