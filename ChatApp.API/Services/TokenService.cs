@@ -20,6 +20,9 @@ namespace ChatApp.API.Services
 
         public string CreateToken(AppUser user)
         {
+            if (user.UserName == null) 
+                throw new ArgumentNullException("user");
+
             // create claims by adding claim type & value
             var claims = new List<Claim>
             {

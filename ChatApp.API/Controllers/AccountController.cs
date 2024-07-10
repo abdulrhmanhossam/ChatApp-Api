@@ -57,7 +57,7 @@ namespace ChatApp.API.Controllers
                 .FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
             
             // check if user null
-            if (user == null)
+            if (user == null || user.UserName == null)
                 return Unauthorized("Invalid Username");
 
             return new UserDto
@@ -75,7 +75,7 @@ namespace ChatApp.API.Controllers
         private async Task<bool> UserExists(string userName)
         {
             return await _dbContext.Users.
-                AnyAsync(u => u.UserName == userName.ToLower());
+                AnyAsync(u => u.NormalizedUserName == userName.ToUpper());
         }
     }
 }
