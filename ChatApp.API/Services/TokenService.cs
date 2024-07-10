@@ -1,5 +1,6 @@
 ﻿using ChatApp.API.Entities;
 using ChatApp.API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -7,18 +8,14 @@ using System.Text;
 
 namespace ChatApp.API.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService(IConfiguration configuration, UserManager<AppUser> userManager) : ITokenService
     {
         //private readonly IConfiguration _configuration;
 
         // create key and configruation to this key
-        private readonly SymmetricSecurityKey _key;
-        public TokenService(IConfiguration configuration)
-        {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
-        }
+        private readonly SymmetricSecurityKey _key = new (Encoding.UTF8.GetBytes(configuration["TokenKey"]));
 
-        public string CreateToken(AppUser user)
+        public async Task<string> CreateToken(AppUser user)
         {
             if (user.UserName == null) 
                 throw new ArgumentNullException("user");
@@ -29,6 +26,10 @@ namespace ChatApp.API.Services
                 new (ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new (ClaimTypes.Name, user.UserName)
             };
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             // create credential and this will be signature of token 
             var credential = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

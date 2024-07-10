@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using ChatApp.API.Data;
 using ChatApp.API.DTOs;
 using ChatApp.API.Entities;
 using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace ChatApp.API.Controllers
 {
@@ -33,7 +30,7 @@ namespace ChatApp.API.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = tokenService.CreateToken(user),
+                Token = await tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
@@ -54,7 +51,7 @@ namespace ChatApp.API.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = tokenService.CreateToken(user),
+                Token = await tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
