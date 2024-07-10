@@ -39,7 +39,12 @@ public class UsersController : BaseApiController
     [HttpGet("{username:alpha}")]
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        return await _userRepository.GetMemberByNameAsync(username);
+        var user = await _userRepository.GetMemberByNameAsync(username);
+
+        if (user == null) 
+            return NotFound();
+
+        return user;
     }
 
     [HttpGet("{id:int}")]
