@@ -1,6 +1,8 @@
 using ChatApp.API.Data;
+using ChatApp.API.Entities;
 using ChatApp.API.Extensions;
 using ChatApp.API.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,8 +49,9 @@ var services = scope.ServiceProvider;
 try
 {
     var dbContext = services.GetRequiredService<AppDbContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await dbContext.Database.MigrateAsync();
-    await Seed.SeedUsersAsync(dbContext);
+    await Seed.SeedUsersAsync(userManager);
 }
 catch (Exception ex)
 {

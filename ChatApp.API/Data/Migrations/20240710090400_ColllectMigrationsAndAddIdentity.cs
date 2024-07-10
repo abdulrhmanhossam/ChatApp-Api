@@ -189,7 +189,7 @@ namespace ChatApp.API.Data.Migrations
                         column: x => x.TargetUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
