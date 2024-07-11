@@ -1,7 +1,5 @@
 ﻿using ChatApp.API.Data;
 using ChatApp.API.Entities;
-using ChatApp.API.Interfaces;
-using ChatApp.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -35,6 +33,10 @@ namespace ChatApp.API.Extensions
                         ValidateAudience = false,
                     };
                 });
+
+            services.AddAuthorizationBuilder()
+                .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
+                .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
 
             return services;
         }
