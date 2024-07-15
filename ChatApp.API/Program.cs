@@ -36,7 +36,8 @@ app.UseCors(
     policyBuilder => policyBuilder
     .AllowAnyHeader()
     .AllowAnyMethod()
-    .WithOrigins()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200")
     );
 
 app.UseAuthentication();
