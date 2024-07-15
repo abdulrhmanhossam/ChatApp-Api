@@ -25,6 +25,8 @@ namespace ChatApp.API.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ColudinarySettings>(configuration.GetSection("ColudinarySettings"));
+
+            services.AddSignalR();
             
             return services;
         }

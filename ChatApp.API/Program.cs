@@ -2,6 +2,7 @@ using ChatApp.API.Data;
 using ChatApp.API.Entities;
 using ChatApp.API.Extensions;
 using ChatApp.API.Middlewares;
+using ChatApp.API.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<PresenceHub>("hubs/presence");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
