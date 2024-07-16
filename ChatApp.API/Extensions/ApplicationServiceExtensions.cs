@@ -3,6 +3,7 @@ using ChatApp.API.Data.Repositories;
 using ChatApp.API.Helpers;
 using ChatApp.API.Interfaces;
 using ChatApp.API.Services;
+using ChatApp.API.SignalR;
 
 namespace ChatApp.API.Extensions
 {
@@ -21,6 +22,7 @@ namespace ChatApp.API.Extensions
             services.AddScoped<ILikesRepository, LikesRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<LogUserActivity>();
+            services.AddSingleton<PresenceTracker>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
