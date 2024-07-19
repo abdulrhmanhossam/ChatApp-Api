@@ -9,6 +9,11 @@ using Microsoft.EntityFrameworkCore;
 namespace ChatApp.API.Data.Repositories;
 public class MessageRepository(AppDbContext dbContext, IMapper mapper) : IMessageRepository
 {
+    public void AddGroup(Group group)
+    {
+        dbContext.Groups.Add(group);
+    }
+
     public void AddMessage(Message message)
     {
         dbContext.Messages.Add(message);
@@ -19,9 +24,22 @@ public class MessageRepository(AppDbContext dbContext, IMapper mapper) : IMessag
         dbContext.Messages.Remove(message);
     }
 
+    public async Task<Connection> GetConnection(string connectionId)
+    {
+        return await dbContext.Connections
+            .FindAsync(connectionId);
+    }
+
     public async Task<Message> GetMessage(int id)
     {
         return await dbContext.Messages.FindAsync(id);
+    }
+
+    public async Task<Group> GetMessageGroup(string groupName)
+    {
+        return await dbContext.Groups
+            .Include(x => x.Connections)
+            .FirstOrDefaultAsync(x => x.Name == groupName);
     }
 
     public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
@@ -71,6 +89,11 @@ public class MessageRepository(AppDbContext dbContext, IMapper mapper) : IMessag
         }
 
         return mapper.Map<IEnumerable<MessageDto>>(messages);
+    }
+
+    public void RemoveConnection(Connection connection)
+    {
+        dbContext.Connections.Remove(connection);
     }
 
     public async Task<bool> SaveAllAsync()
