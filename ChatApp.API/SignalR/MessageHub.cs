@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace ChatApp.API.SignalR;
 
 public class MessageHub(IMessageRepository messageRepository,
-    IUserRepository userRepository, IMapper mapper) : Hub
+    IUserRepository userRepository, IMapper mapper, IHubContext<PresenceHub> presencehub) : Hub
 {
     public override async Task OnConnectedAsync()
     {
@@ -64,7 +64,24 @@ public class MessageHub(IMessageRepository messageRepository,
         var group = await messageRepository.GetMessageGroup(groupName);
 
         if (group != null && group.Connections.Any(x => x.Username == recipient.UserName))
+        {
             message.DateRead = DateTime.UtcNow;
+        }
+        else
+        {
+            var connections = await PresenceTracker
+                .GetConnectionsForUser(recipient.UserName);
+            if (connections != null && connections?.Count() != null)
+            {
+                await presencehub.Clients
+                    .Clients(connections)
+                    .SendAsync("NewMessageReceived", new 
+                    { 
+                        username = sender.UserName, 
+                        knownAs = sender.KnownAs
+                    });
+            }
+        }
 
         messageRepository.AddMessage(message);
 
