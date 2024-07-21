@@ -102,9 +102,4 @@ public class MessageRepository(AppDbContext dbContext, IMapper mapper) : IMessag
     {
         dbContext.Connections.Remove(connection);
     }
-
-    public async Task<bool> SaveAllAsync()
-    {
-        return await dbContext.SaveChangesAsync() > 0;
-    }
 }
