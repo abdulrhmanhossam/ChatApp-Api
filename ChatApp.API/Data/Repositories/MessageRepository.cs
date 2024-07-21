@@ -92,7 +92,6 @@ public class MessageRepository(AppDbContext dbContext, IMapper mapper) : IMessag
         if (unreadMessages.Count != 0)
         {
             unreadMessages.ForEach(x => x.DateRead = DateTime.UtcNow);
-            await dbContext.SaveChangesAsync();
         }
 
         return messages;
